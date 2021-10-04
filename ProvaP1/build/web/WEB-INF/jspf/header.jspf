@@ -1,0 +1,49 @@
+<%-- any content can be specified here e.g.: --%>
+<%@page import="java.util.Random"%>
+<%@page import="java.lang.String"%>
+<%@ page pageEncoding="UTF-8" %>
+<%  //login
+    if (request.getParameter("session-login") != null) {
+        session.setAttribute("session-name", request.getParameter("session-name"));
+        response.sendRedirect(request.getRequestURI());
+        int numerosAleatorios[] = new int [6];
+        for (int i=0; i < numerosAleatorios.length; i++) {
+            Random aleatorio = new Random();
+            int valor = aleatorio.nextInt(60) +1;
+            numerosAleatorios[i] = valor;
+        }
+        session.setAttribute("numeros-aleatorios", numerosAleatorios);
+    //logout
+    } else if (request.getParameter("session-logout") != null){
+        session.removeAttribute("session-name");
+        session.removeAttribute("numeros-aleatorios");
+        int usuarios = (int) application.getAttribute("usuarios");
+        application.setAttribute("usuarios", usuarios - 1);
+        response.sendRedirect(request.getRequestURI());
+    }
+    
+    if (application.getAttribute("usuarios") == null) {
+        application.setAttribute("usuarios", 0); 
+    }
+    if (request.getParameter("session-login") != null) {
+        int usuarios = (int) application.getAttribute("usuarios");
+        application.setAttribute("usuarios", usuarios + 1); 
+    }
+    int usuarios = (int) application.getAttribute("usuarios"); 
+            
+    String sessionName = (String) session.getAttribute("session-name");
+%>
+<h2>Sthefany Caires</h2>
+<form method="post">
+    <%if (sessionName == null) {%>
+            <input type="text" name="session-name" placeholder = "Insira seu nome para entrar:"/>
+            <input type="submit" name="session-login" value = "Entrar"/>            
+            <%} else {%>
+            Bem vindo, <%= sessionName%>
+            <input type="submit" name="session-logout" value = "Sair"/>
+            <%}%>
+            <br>
+            <a href="index.jsp">Página Inicial</a>
+            <a href="sthefany-caires.jsp">Sobre</a>
+            <a href="sthefany-caires-dica-megasena.jsp">Números da sorte</a>
+</form>
